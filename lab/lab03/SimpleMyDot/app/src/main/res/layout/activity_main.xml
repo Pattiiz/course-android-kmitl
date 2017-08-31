@@ -5,16 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/dotView"
     tools:context="kmitl.lab03.titiphat58070059.MainActivity">
+
+    <kmitl.lab03.titiphat58070059.view.DotView
+        android:id="@+id/dotView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="50dp"
         android:onClick="onRandomDot"
         android:text="@string/random_dot" />
+
+    <Button
+        android:id="@+id/clearButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="50dp"
+        android:onClick="onClearDot"
+        android:layout_alignParentRight="true"
+        android:text="@string/clear_dot" />
 
 </RelativeLayout>
