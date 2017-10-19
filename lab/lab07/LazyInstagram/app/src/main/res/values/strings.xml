@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">LazyInstagram</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="change_viewtype">Change Viewtype</string>
+    <string name="follow">Follow</string>
+    <string name="posts">Posts</string>
+    <string name="following">Following</string>
+    <string name="follower">Follower</string>
+    <string name="description">Description</string>
+</resources>
