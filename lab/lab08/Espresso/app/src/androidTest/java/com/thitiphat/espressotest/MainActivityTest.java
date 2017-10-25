@@ -1,27 +1,31 @@
 package com.thitiphat.espressotest;
 
 
-import android.support.test.espresso.ViewInteraction;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+
+import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
+
+import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static org.hamcrest.Matchers.not;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -32,34 +36,188 @@ public class MainActivityTest {
 
     @Test
     public void mainActivityTest() {
-        ViewInteraction textView = onView(
-                allOf(withText("Hello World!"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        textView.check(matches(withText("Hello World!")));
 
     }
 
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
+        return parentMatcher;
+    }
 
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
-                parentMatcher.describeTo(description);
-            }
+    public static RecyclerViewMatcher withRecyclerView(final int recyclerViewId) {
+        return new RecyclerViewMatcher(recyclerViewId);
+    }
 
-            @Override
-            public boolean matchesSafely(View view) {
-                ViewParent parent = view.getParent();
-                return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup) parent).getChildAt(position));
-            }
-        };
+    //Insert name only
+    @Test
+    public void insertName() {
+        SystemClock.sleep(500);
+        onView(withId(R.id.etName)).perform(typeText("Ying"), closeSoftKeyboard());
+        SystemClock.sleep(500);
+        onView(withId(R.id.btnAdd)).perform(click());
+        SystemClock.sleep(500);
+        onView(withText("Please Enter user info"))
+                .inRoot(withDecorView(not(mActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
+        SystemClock.sleep(1500);
+    }
+
+    //Insert age only
+    @Test
+    public void insertAge() {
+        SystemClock.sleep(500);
+        onView(withId(R.id.etAge)).perform(typeText("20"), closeSoftKeyboard());
+        SystemClock.sleep(500);
+        onView(withId(R.id.btnAdd)).perform(click());
+        SystemClock.sleep(500);
+        onView(withText("Please Enter user info"))
+                .inRoot(withDecorView(not(mActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
+        SystemClock.sleep(1500);
+    }
+
+    //is list empty?
+    @Test
+    public void isListEmpty() {
+        SystemClock.sleep(500);
+        onView(withId(R.id.btnView)).perform(click());
+        SystemClock.sleep(500);
+        onView(withText("Not Found"))
+                .inRoot(withDecorView(not(mActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
+        SystemClock.sleep(1500);
+    }
+
+    //Input Nothing
+    @Test
+    public void isInputEmpty() {
+        SystemClock.sleep(500);
+        onView(withId(R.id.btnAdd)).perform(click());
+        SystemClock.sleep(500);
+        onView(withText("Please Enter user info"))
+                .inRoot(withDecorView(not(mActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
+        SystemClock.sleep(1500);
+    }
+
+    //Multiple Input
+    //Not working yet
+    @Test
+    public void testStep() {
+
+        //Ying 20
+        onView(withId(R.id.etName)).perform(typeText("Ying"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.etAge)).perform(typeText("20"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.btnAdd)).perform(click());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.btnView)).perform(click());
+        SystemClock.sleep(1000);
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(0, R.id.tvName))
+                .check(matches(withText("Ying")));
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(0, R.id.tvAge))
+                .check(matches(withText("20")));
+        SystemClock.sleep(2000);
+
+        onView(withId(R.id.btnBack)).perform(click());
+        SystemClock.sleep(1000);
+
+        //Ladarat 20
+        onView(withId(R.id.etName)).perform(typeText("Ladarat"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.etAge)).perform(typeText("20"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.btnAdd)).perform(click());
+        SystemClock.sleep(1000);
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(1, R.id.tvName))
+                .check(matches(withText("Ladarat")));
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(1, R.id.tvAge))
+                .check(matches(withText("20")));
+        SystemClock.sleep(2000);
+
+        onView(withId(R.id.btnBack)).perform(click());
+        SystemClock.sleep(1000);
+
+        //Somkiat 80
+        onView(withId(R.id.etName)).perform(typeText("Somkait"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.etAge)).perform(typeText("80"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.btnAdd)).perform(click());
+        SystemClock.sleep(1000);
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(2, R.id.tvName))
+                .check(matches(withText("Somkait")));
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(2, R.id.tvAge))
+                .check(matches(withText("80")));
+        SystemClock.sleep(2000);
+
+        onView(withId(R.id.btnBack)).perform(click());
+        SystemClock.sleep(1000);
+
+        //Prayoch 60
+        onView(withId(R.id.etName)).perform(typeText("Prayoch"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.etAge)).perform(typeText("60"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.btnAdd)).perform(click());
+        SystemClock.sleep(1000);
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(3, R.id.tvName))
+                .check(matches(withText("Prayoch")));
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(3, R.id.tvAge))
+                .check(matches(withText("60")));
+        SystemClock.sleep(2000);
+
+        onView(withId(R.id.btnBack)).perform(click());
+        SystemClock.sleep(1000);
+
+        //Prayoch 50
+        onView(withId(R.id.etName)).perform(typeText("Prayoch"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.etAge)).perform(typeText("50"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.btnAdd)).perform(click());
+        SystemClock.sleep(1000);
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(4, R.id.tvName))
+                .check(matches(withText("Prayoch")));
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(4, R.id.tvAge))
+                .check(matches(withText("50")));
+        SystemClock.sleep(2000);
+    }
+
+    //Just test ---- Single input
+    //@Test
+    public void test1() {
+        onView(withId(R.id.etName)).perform(typeText("Ying"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.etAge)).perform(typeText("20"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.btnAdd)).perform(click());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.btnView)).perform(click());
+        SystemClock.sleep(1000);
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(0, R.id.tvName))
+                .check(matches(withText("Ying")));
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(0, R.id.tvAge))
+                .check(matches(withText("20")));
+        SystemClock.sleep(2000);
+    }
+
+    //Just test ---- Single input
+    //@Test
+    public void test2() {
+        onView(withId(R.id.etName)).perform(typeText("Ladarat"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.etAge)).perform(typeText("20"), closeSoftKeyboard());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.btnAdd)).perform(click());
+        SystemClock.sleep(1000);
+        onView(withId(R.id.btnView)).perform(click());
+        SystemClock.sleep(1000);
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(0, R.id.tvName))
+                .check(matches(withText("Ladarat")));
+        onView(withRecyclerView(R.id.itemList).atPositionOnView(0, R.id.tvAge))
+                .check(matches(withText("20")));
+        SystemClock.sleep(2000);
     }
 }

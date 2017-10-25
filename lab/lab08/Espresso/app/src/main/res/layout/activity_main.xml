@@ -8,28 +8,34 @@
     tools:context="com.thitiphat.espressotest.MainActivity">
 
     <EditText
+        android:id="@+id/etName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
-        android:inputType="text"
-        android:text="Name" />
+        android:hint="Name"
+        android:inputType="text" />
 
     <EditText
+        android:id="@+id/etAge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
-        android:inputType="number"
-        android:text="Age" />
+        android:hint="Age"
+        android:inputType="number" />
 
     <Button
+        android:id="@+id/btnAdd"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="48dp"
-        android:layout_height="wrap_content" />
+        android:layout_marginBottom="64dp"
+        android:text="@string/added" />
 
     <Button
+        android:id="@+id/btnView"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_height="wrap_content" />
+        android:text="@string/go_to_list" />
 
 </RelativeLayout>
