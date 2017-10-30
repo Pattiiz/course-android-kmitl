@@ -1,10 +1,13 @@
-package com.thitiphat.espressotest;
+package com.thitiphat.espressotest.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.thitiphat.espressotest.R;
+import com.thitiphat.espressotest.model.UserList;
 
 import java.util.List;
 
@@ -14,7 +17,8 @@ import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.Holder> {
 
-    List<String> nameList, ageList;
+    private List<String> nameList, ageList;
+    private UserList userList;
 
     public class Holder extends RecyclerView.ViewHolder {
 
@@ -28,12 +32,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.Holder> {
     }
 
     public ItemAdapter() {
-
+        userList = new UserList();
     }
 
     public void setItem(List<String> nameList, List<String> ageList) {
         this.nameList = nameList;
         this.ageList = ageList;
+    }
+
+    public void setList(UserList userList) {
+        this.userList = userList;
     }
 
     @Override
@@ -48,13 +56,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.Holder> {
     public void onBindViewHolder(Holder holder, int position) {
         TextView name = holder.tvName;
         TextView age = holder.tvAge;
-        name.setText(nameList.get(position));
-        age.setText(ageList.get(position));
+//        name.setText(nameList.get(position));
+//        age.setText(ageList.get(position));
+        name.setText(userList.getUserList().get(position).getName().toString());
+        age.setText(userList.getUserList().get(position).getAge().toString());
     }
 
     @Override
     public int getItemCount() {
-        return nameList.size();
+        //return nameList.size();
+        return userList.getUserList().size();
     }
 
 }
